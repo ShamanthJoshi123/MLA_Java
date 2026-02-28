@@ -37,7 +37,7 @@ public class EmployeeController {
 		if(eobj!=null) {
 			return new ResponseEntity<>(eobj,HttpStatus.CREATED);
 		}else {
-			return new ResponseEntity<>(eobj,HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(eobj,HttpStatus.BAD_REQUEST);
 		}
 	}
 	@GetMapping("/list")
@@ -47,7 +47,17 @@ public class EmployeeController {
 		if(list.size()>0) {
 			return new ResponseEntity<>(list, HttpStatus.OK);
 		}else {
-			return new ResponseEntity<>(list, HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(list, HttpStatus.NOT_FOUND);
+		}
+	}
+	@GetMapping("/byid/{id}")
+	@Operation(summary="get employee by id")
+	public ResponseEntity<Optional<Employee>> getEmployeeById(@PathVariable int id){
+		Optional<Employee> emp = service.getEmployeeById(id);
+		if(emp != null) {
+			return new ResponseEntity<>(emp,HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(emp, HttpStatus.NOT_FOUND);
 		}
 	}
 	@GetMapping("/byname/{name}")
@@ -57,7 +67,7 @@ public class EmployeeController {
 		if(eobj.size()>0) {
 			return new ResponseEntity<>(eobj, HttpStatus.OK);
 		}else {
-			return new ResponseEntity<>(eobj, HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(eobj, HttpStatus.NOT_FOUND);
 		}
 		
 	}
@@ -68,7 +78,7 @@ public class EmployeeController {
 		if(list.size()>0) {
 			return new ResponseEntity<>(list, HttpStatus.OK);
 		}else {
-			return new ResponseEntity<>(list, HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(list, HttpStatus.NOT_FOUND);
 		}
 		
 	}
@@ -79,7 +89,7 @@ public class EmployeeController {
 		if(list.size()>0) {
 			return new ResponseEntity<>(list, HttpStatus.OK);
 		}else {
-			return new ResponseEntity<>(list, HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -90,7 +100,7 @@ public class EmployeeController {
 		if(eobj != null) {
 			return new ResponseEntity<>(eobj,HttpStatus.ACCEPTED);
 		}else {
-			return new ResponseEntity<>(eobj, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(eobj, HttpStatus.NOT_FOUND);
 		}
 	}
 	@DeleteMapping(value="/{id}",produces="application/json")
@@ -99,7 +109,7 @@ public class EmployeeController {
 		if(list.size()>0) {
 			return new ResponseEntity<>(list, HttpStatus.OK);
 		}else {
-			return new ResponseEntity<>(list, HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(list, HttpStatus.NOT_FOUND);
 		}
 	}
 	
