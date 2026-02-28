@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.test.entity.Employee;
+import com.test.repository.EmployeeRepository;
 import com.test.service.EmployeeService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,6 +28,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class EmployeeController {
 	@Autowired 
 	private EmployeeService service;
+	@Autowired
+	private EmployeeRepository repository;
 	@PostMapping("/create")
 	@Operation(summary = "CREATE EMPLOYEE")
 	public ResponseEntity<Employee> createEmployee(@RequestBody Employee emp){
@@ -47,23 +50,47 @@ public class EmployeeController {
 			return new ResponseEntity<>(list, HttpStatus.NO_CONTENT);
 		}
 	}
-	@GetMapping(value="/{id}",produces="application/json")
-	public ResponseEntity<Optional<Employee>> getEmployeeById(@PathVariable int id){
-		Optional<Employee> emp = service.getEmployeeById(id);
-		if(emp != null) {
-			return new ResponseEntity<>(emp,HttpStatus.OK);
+	@GetMapping("/byname/{name}")
+	@Operation(summary="get employee by name")
+	public ResponseEntity<List<Employee>> getEmployeeByName(@PathVariable String name){
+		List<Employee> eobj = repository.getEmployeesByName(name);
+		if(eobj.size()>0) {
+			return new ResponseEntity<>(eobj, HttpStatus.OK);
 		}else {
-			return new ResponseEntity<>(emp, HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(eobj, HttpStatus.NO_CONTENT);
+		}
+		
+	}
+	@GetMapping("/bycmp/{company}")
+	@Operation(summary="get employee by company")
+	public ResponseEntity<List<Employee>> getEmployeeByCompany(@PathVariable String company){
+		List<Employee> list = repository.getEmployeesByCompany(company);
+		if(list.size()>0) {
+			return new ResponseEntity<>(list, HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(list, HttpStatus.NO_CONTENT);
+		}
+		
+	}
+	@GetMapping("/emplist/asc")
+	@Operation(summary = "employees by asc order by name")
+	public ResponseEntity<List<Employee>> getEmployeesByNameASC(){
+		List<Employee> list = repository.getEmployeesByNameASC();
+		if(list.size()>0) {
+			return new ResponseEntity<>(list, HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(list, HttpStatus.NO_CONTENT);
 		}
 	}
+	
 	@PutMapping(value="/{id}",consumes="application/json")
 	public ResponseEntity<Employee> updateEmployeeById(@PathVariable int id, @RequestBody Employee employee){
 		employee.setId(id);
-		Employee emp = service.updateEmployee(employee);
-		if(emp != null) {
-			return new ResponseEntity<>(emp,HttpStatus.ACCEPTED);
+		Employee eobj = service.updateEmployee(employee);
+		if(eobj != null) {
+			return new ResponseEntity<>(eobj,HttpStatus.ACCEPTED);
 		}else {
-			return new ResponseEntity<>(emp, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(eobj, HttpStatus.BAD_REQUEST);
 		}
 	}
 	@DeleteMapping(value="/{id}",produces="application/json")
